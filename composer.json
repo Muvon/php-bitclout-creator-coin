@@ -1,0 +1,33 @@
+{
+  "name": "muvon/bitclout-creator-coin",
+  "description": "Implementation of creator coin curve of BitClout",
+  "keywords": [
+    "bitclout",
+    "bclt",
+    "blockchain",
+    "token",
+    "coin",
+    "creator",
+    "clout",
+    "cryptocurrency"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Muvon Co. Ltd",
+      "email": "contact@muvon.io"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require-dev": {
+    "phpunit/phpunit": "^10"
+  },
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Muvon\\Bitclout\\": "src/"
+    }
+  }
+}
