@@ -62,7 +62,7 @@ class CreatorCoinTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals(0, $last_buy['reward']['amount']);
     $this->assertEquals(99996669, $last_buy['reward']['coin']);
     $this->assertEquals($Coin->getSupply(), $Coin->getWatermark());
-    
+
     $Coin->sell(1000000);
     $Coin->buy(2000);
     $last_buy = $Coin->getLastBuy();
@@ -75,4 +75,25 @@ class CreatorCoinTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals(133204, $last_buy['reward']['coin']);
   }
 
+  public function testMintingStrategy() {
+    $Coin = CreatorCoin::create(1000);
+    $Coin->setIsCreator(false);
+    $Coin->setStrategy('minting');
+
+    $Coin->buy(1000000);
+    $last_buy = $Coin->getLastBuy();
+    $this->assertEquals(0, $last_buy['reward']['amount']);
+    $this->assertEquals(99996669, $last_buy['reward']['coin']);
+
+    $Coin->sell(1000000);
+    $Coin->buy(2000);
+    $last_buy = $Coin->getLastBuy();
+    $this->assertEquals(0, $last_buy['reward']['amount']);
+    $this->assertEquals(66726, $last_buy['reward']['coin']);
+
+    $Coin->buy(5000);
+    $last_buy = $Coin->getLastBuy();
+    $this->assertEquals(0, $last_buy['reward']['amount']);
+    $this->assertEquals(166477, $last_buy['reward']['coin']);
+  }
 }
