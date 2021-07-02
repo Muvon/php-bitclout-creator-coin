@@ -51,4 +51,28 @@ class CreatorCoinTest extends \PHPUnit\Framework\TestCase {
     $Coin->sell(100000000);
   }
 
+  // Test previous strategies used by network before
+  public function testWatermarkStrategy() {
+    $Coin = CreatorCoin::create(1000);
+    $Coin->setIsCreator(false);
+    $Coin->setStrategy('watermark');
+
+    $Coin->buy(1000000);
+    $last_buy = $Coin->getLastBuy();
+    $this->assertEquals(0, $last_buy['reward']['amount']);
+    $this->assertEquals(99996669, $last_buy['reward']['coin']);
+    $this->assertEquals($Coin->getSupply(), $Coin->getWatermark());
+    
+    $Coin->sell(1000000);
+    $Coin->buy(2000);
+    $last_buy = $Coin->getLastBuy();
+    $this->assertEquals(0, $last_buy['reward']['amount']);
+    $this->assertEquals(0, $last_buy['reward']['coin']);
+
+    $Coin->buy(5000);
+    $last_buy = $Coin->getLastBuy();
+    $this->assertEquals(0, $last_buy['reward']['amount']);
+    $this->assertEquals(133204, $last_buy['reward']['coin']);
+  }
+
 }

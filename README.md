@@ -14,3 +14,4 @@ composer require muvon/bitclout-creator-coin
 
 - Buy new creator
 - Sell creator coin
+- Watermark strategy
