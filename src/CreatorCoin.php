@@ -57,20 +57,60 @@ class CreatorCoin {
     return $this;
   }
 
+  /**
+   * Set current strategy for next buys/sells
+   * Current default strategy is "reward"
+   * @param string $strategy
+   *   One of watermark, minting or reward
+   * @return static
+   */
   public function setStrategy(string $strategy): static {
     $this->strategy = $strategy;
     return $this;
   }
+
+
+  /**
+   * Set strategy according to transaction block height
+   *
+   * @param int $height
+   * @return static
+   */
+  public function setStrategyByHeight(int $height): static {
+    $this->strategy = match (true) {
+      $height <= 15270 => 'watermark',
+      $height > 15270 && $height <= 21869 => 'minting',
+      $height > 21869 => 'reward',
+    };
+
+    return $this;
+  }
+
+  /**
+   * Set current reward for next buys
+   *
+   * @param int $reward
+   *   Reward basis points as int
+   * @return static
+   */
   public function setReward(int $reward): static {
     $this->reward = $reward;
     return $this;
   }
+
   public function setIsCreator(bool $is_creator): static  {
     $this->is_creator = $is_creator;
     return $this;
   }
 
   // https://github.com/bitclout/core/blob/d268ff4d11f98b65a0438d84b3e9a5397eaef84e/lib/block_view.go#L2039
+  /**
+   * Emulate buy creator coins of account
+   *
+   * @param int $amount
+   *  Amount we buy in nanos of $clout
+   * @return static
+   */
   public function buy(int $amount): static {
     if ($this->reward === 10000 && !$this->is_creator && $this->strategy === 'reward') {
       throw new InvalidArgumentException('Incorrect reward basis points');
@@ -79,7 +119,7 @@ class CreatorCoin {
     if ($trade_amount === 0) {
       throw new Exception('Invalid amount after fees');
     }
-    
+
     $reward_amount = 0;
     if ($this->strategy === 'reward' && !$this->is_creator) {
       $reward_amount = intval(($trade_amount * $this->reward) / (100 * 100));
@@ -118,6 +158,13 @@ class CreatorCoin {
     return $this;
   }
 
+  /**
+   * Emulate selling of amount of current holded creator tokens
+   *
+   * @param int $amount
+   *   Amount of creator coins in nanos
+   * @return static
+   */
   public function sell(int $amount): static {
     $returned = $this->calculateReturned($amount);
 
