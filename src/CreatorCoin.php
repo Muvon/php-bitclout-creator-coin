@@ -21,7 +21,7 @@ class CreatorCoin {
   //   watermark - <= 15270
   //   minting - <= 21869
   //   reward - > 21869
-  protected string $strategy = 'reward'; 
+  protected string $strategy = 'reward';
 
   // Last buy and sell info
   protected array $buy = [];
@@ -29,8 +29,32 @@ class CreatorCoin {
 
   final protected function __construct(protected int $reward) {}
 
+  /**
+   * Create new creator coin object with given reward
+   *
+   * @param int $reward
+   *   Reward basis points
+   * @return static
+   */
   public static function create(int $reward): static {
     return new static($reward);
+  }
+
+  /**
+   * Initialize creator coin with base data available
+   *
+   * @param int $locked
+   *   Locked amount in nanos
+   * @param int $supply
+   *   Total supply in $creator coins in nanos
+   * @return static
+   */
+  public function init(int $locked, int $supply): static {
+    $this->locked = $locked;
+    $this->supply = $supply;
+    $this->watermark = $supply;
+    $this->recalculateRate();
+    return $this;
   }
 
   public function setStrategy(string $strategy): static {
