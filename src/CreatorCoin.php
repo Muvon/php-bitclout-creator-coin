@@ -50,6 +50,9 @@ class CreatorCoin {
    * @return static
    */
   public function init(int $locked, int $supply): static {
+    if ($this->supply > 0) {
+      throw new Exception('Creator coin was inited already');
+    }
     $this->locked = $locked;
     $this->supply = $supply;
     $this->watermark = $supply;

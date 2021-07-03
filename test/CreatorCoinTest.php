@@ -96,4 +96,16 @@ class CreatorCoinTest extends \PHPUnit\Framework\TestCase {
     $this->assertEquals(0, $last_buy['reward']['amount']);
     $this->assertEquals(166477, $last_buy['reward']['coin']);
   }
+
+  public function testInitLockedSupply() {
+    $Coin = CreatorCoin::create(0);
+    $Coin->init(999900000, 9999664686);
+    $this->assertEquals(99993352, $Coin->getRate());
+    $this->assertEquals(999900000, $Coin->getLocked());
+    $this->assertEquals(9999664686, $Coin->getSupply());
+    $this->assertEquals($Coin->getSupply(), $Coin->getWatermark());
+
+    $this->expectException(Exception::class);
+    $Coin->init(1, 1);
+  }
 }
