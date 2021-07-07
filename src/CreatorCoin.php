@@ -9,6 +9,7 @@ class CreatorCoin {
   const RESERVE_RATIO = 0.3333333;
   const SLOPE = 0.003;
   const NANOS_PER_UNIT = 1000000000;
+  const THRESHOLD = 10;
 
   protected int $locked = 0;
   protected int $supply = 0;
@@ -114,7 +115,7 @@ class CreatorCoin {
    *  Amount we buy in nanos of $clout
    * @return static
    */
-  public function buy(int $amount): static {
+  public function buy(int $amount, bool $preview = false): static {
     if ($this->reward === 10000 && !$this->is_creator && $this->strategy === 'reward') {
       throw new InvalidArgumentException('Incorrect reward basis points');
     }
@@ -135,9 +136,11 @@ class CreatorCoin {
       $minted = $this->calculateBancorMinting($buy_amount);
     }
 
-    $this->locked += $buy_amount;
-    $this->supply += $minted;
-    $this->recalculateRate();
+    if (!$preview) {
+      $this->locked += $buy_amount;
+      $this->supply += $minted;
+      $this->recalculateRate();
+    }
 
     $reward = ['amount' => $reward_amount, 'coin' => 0];
     $watermark = max($this->supply, $this->watermark);
@@ -152,6 +155,7 @@ class CreatorCoin {
     $received = $this->is_creator ? $minted : intval($minted - $reward['coin']);
 
     $this->buy = [
+      'preview' => $preview,
       'amount' => $buy_amount,
       'minted' => $minted,
       'received' => $received,
@@ -168,15 +172,18 @@ class CreatorCoin {
    *   Amount of creator coins in nanos
    * @return static
    */
-  public function sell(int $amount): static {
+  public function sell(int $amount, bool $preview = false): static {
     $returned = $this->calculateReturned($amount);
 
-    $this->locked -= $returned;
-    $this->supply -= $amount;
-    $this->recalculateRate();
+    if (!$preview) {
+      $this->locked -= $returned;
+      $this->supply -= $amount;
+      $this->recalculateRate();
+    }
 
     $credited = $this->applyTradeFees($returned);
     $this->sell = [
+      'preview' => $preview,
       'amount' => $amount,
       'returned' => $credited,
       'rate' => intval(($credited / $amount) * static::NANOS_PER_UNIT),
