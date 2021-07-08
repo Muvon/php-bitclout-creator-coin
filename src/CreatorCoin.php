@@ -261,4 +261,19 @@ class CreatorCoin {
   public function getLastSell(): array {
     return $this->sell;
   }
+
+  // This method is required to call with additional parameter
+  // To follow code logic of salamon bug fixing
+  public function adjustSellAmount(int $amount, int $held): int {
+    if ($held < $amount) {
+      throw new Exception('Invalid held amount. Trying to sell ' . $amount . ' out of ' . $held);
+    }
+
+    // Salamon bug fixed after watermark startegy
+    if ($this->strategy !== 'watermark' && ($held - $amount) < static::THRESHOLD) {
+      $amount = $held;
+    }
+
+    return $amount;
+  }
 }
