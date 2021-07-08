@@ -144,12 +144,14 @@ class CreatorCoin {
 
     $reward = ['amount' => $reward_amount, 'coin' => 0];
     $watermark = max($this->supply, $this->watermark);
-    if ($this->strategy === 'watermark' && $watermark > $this->watermark) {
+    if ($this->strategy === 'watermark' && !$this->is_creator && $watermark > $this->watermark) {
       $reward['coin'] = intval((($watermark - $this->watermark) * $this->reward) / (100 * 100));
     }
-    $this->watermark = $watermark;
+    if (!$preview) {
+      $this->watermark = $watermark;
+    }
 
-    if ($this->strategy === 'minting') {
+    if ($this->strategy === 'minting' && !$this->is_creator) {
       $reward['coin'] = intval(($minted * $this->reward) / (100 * 100));
     }
     $received = $this->is_creator ? $minted : intval($minted - $reward['coin']);
