@@ -180,6 +180,11 @@ class CreatorCoin {
     if (!$preview) {
       $this->locked -= $returned;
       $this->supply -= $amount;
+      // Emulate zero holder
+      // https://github.com/bitclout/core/blob/d268ff4d11f98b65a0438d84b3e9a5397eaef84e/lib/block_view.go#L5654
+      if ($this->supply === 0) {
+        $this->locked = 0;
+      }
       $this->recalculateRate();
     }
 
