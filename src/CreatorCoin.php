@@ -107,6 +107,11 @@ class CreatorCoin {
     return $this;
   }
 
+  public function setWatermark(int $watermark): static {
+    $this->watermark = max($this->supply, $watermark);
+    return $this;
+  }
+
   // https://github.com/bitclout/core/blob/d268ff4d11f98b65a0438d84b3e9a5397eaef84e/lib/block_view.go#L2039
   /**
    * Emulate buy creator coins of account
@@ -265,6 +270,10 @@ class CreatorCoin {
 
   public function getLastSell(): array {
     return $this->sell;
+  }
+
+  public function getStrategy(): string {
+    return $this->strategy;
   }
 
   // This method is required to call with additional parameter
