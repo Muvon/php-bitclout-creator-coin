@@ -48,15 +48,17 @@ class CreatorCoin {
    *   Locked amount in nanos
    * @param int $supply
    *   Total supply in $creator coins in nanos
+   * @param int $watermark
+   *   Optional watermark in case we use same strategy
    * @return static
    */
-  public function init(int $locked, int $supply): static {
+  public function init(int $locked, int $supply, int $watermark = 0): static {
     if ($this->supply > 0) {
       throw new Exception('Creator coin was inited already');
     }
     $this->locked = $locked;
     $this->supply = $supply;
-    $this->watermark = $supply;
+    $this->watermark = max($supply, $watermark);
     $this->recalculateRate();
     return $this;
   }

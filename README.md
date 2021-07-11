@@ -26,7 +26,8 @@ composer require muvon/bitclout-creator-coin
     ```php
     use Muvon\Bitclout\CreatorCoin;
     $Coin = CreatorCoin::create(0); // pass reward basis points
-    $Coin->init(1000, 1000); // locked and supply in nanos
+    // Watermark is optional
+    $Coin->init(1000, 1000, 0); // locked, supply and watermark in nanos
     ```
 
 ### Emulate buys
