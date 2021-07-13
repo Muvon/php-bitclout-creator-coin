@@ -143,6 +143,11 @@ class CreatorCoin {
       $minted = $this->calculateBancorMinting($buy_amount);
     }
 
+    // Salamon bug fixed after watermark startegy
+    if ($this->strategy !== 'watermark' && $minted < static::THRESHOLD) {
+      throw new InvalidArgumentException('Creator coins minted amount is out of threshold');
+    }
+
     if (!$preview) {
       $this->locked += $buy_amount;
       $this->supply += $minted;
@@ -169,7 +174,7 @@ class CreatorCoin {
       'minted' => $minted,
       'received' => $received,
       'reward' => $reward,
-      'rate' => intval(($buy_amount / $minted) * static::NANOS_PER_UNIT),
+      'rate' => $minted > 0 ? intval(($buy_amount / $minted) * static::NANOS_PER_UNIT) : 0,
     ];
     return $this;
   }
