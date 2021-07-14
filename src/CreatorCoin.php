@@ -234,7 +234,7 @@ class CreatorCoin {
 
   protected function calculateReturned(int $amount): int {
     if ($amount > $this->supply) {
-      throw new InvalidArgumentException('Amount of coins is out of supply');
+      throw new InvalidArgumentException('Amount of coins is out of supply: ' . $amount . ' > ' . $this->supply);
     }
     $delta_amount = $amount / static::NANOS_PER_UNIT;
     $delta_supply = $this->supply / static::NANOS_PER_UNIT;
@@ -255,6 +255,9 @@ class CreatorCoin {
   }
 
   // Getters
+  public function getReward(): int {
+    return $this->reward;
+  }
   public function getLocked(): int {
     return $this->locked;
   }
