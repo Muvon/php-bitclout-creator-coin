@@ -254,6 +254,12 @@ class CreatorCoin {
     $this->rate = $this->supply > 0  ? intval(($this->locked / $this->supply) * static::NANOS_PER_UNIT) : 0;
   }
 
+  // Used to caculate pseudo dividends in nft for example
+  public function addLocked(int $locked): static {
+    $this->locked += $locked;
+    return $this;
+  }
+
   // Getters
   public function getReward(): int {
     return $this->reward;
